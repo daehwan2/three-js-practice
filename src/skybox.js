@@ -87,6 +87,8 @@ if (WEBGL.isWebGLAvailable()) {
     skyMaterialArr[i].side = THREE.BackSide;
   }
 
+  const object3D = new THREE.Object3D();
+  scene.add(object3D);
   // 매쉬 추가
   const skyGeometry = new THREE.BoxGeometry(2400, 2400, 2400);
   //   const skyMaterial = new THREE.MeshStandardMaterial({
@@ -96,7 +98,15 @@ if (WEBGL.isWebGLAvailable()) {
 
   //   skyMaterial.side = THREE.BackSide;
   const sky = new THREE.Mesh(skyGeometry, skyMaterialArr);
-  scene.add(sky);
+  object3D.add(sky);
+
+  const sphereGeometry = new THREE.SphereGeometry(10, 10, 10);
+  const sphereMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf7afd76,
+  });
+  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  sphere.position.set(100, 0, 0);
+  object3D.add(sphere);
 
   function animate(time) {
     renderer.render(scene, camera);
