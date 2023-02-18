@@ -29,6 +29,11 @@ if (WEBGL.isWebGLAvailable()) {
 
   document.body.appendChild(renderer.domElement);
 
+  // 빛
+  const pointLight = new THREE.PointLight(0xffffff, 1);
+  pointLight.position.set(0, 2, 12);
+  scene.add(pointLight);
+
   // 도형 추가하기
   // 매쉬
   const geometry01 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
@@ -42,7 +47,7 @@ if (WEBGL.isWebGLAvailable()) {
   // 매쉬
   const geometry02 = new THREE.ConeGeometry(0.5, 0.5, 0.5);
   const material02 = new THREE.MeshStandardMaterial({
-    color: 0x999999,
+    color: 0xff7f00,
   });
   const obj02 = new THREE.Mesh(geometry02, material02);
   scene.add(obj02);
@@ -59,7 +64,11 @@ if (WEBGL.isWebGLAvailable()) {
   // 매쉬
   const geometry04 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
   const material04 = new THREE.MeshStandardMaterial({
-    color: 0x999999,
+    color: 0xf32321,
+    metalness: 0.2,
+    transparent: true,
+    roughness: 0.5,
+    opacity: 0.5,
   });
   const obj04 = new THREE.Mesh(geometry04, material04);
   obj04.position.x = 2;
