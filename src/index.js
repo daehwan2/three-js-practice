@@ -1,11 +1,18 @@
 import * as THREE from 'three';
-import { DirectionalLightHelper, PointLightHelper } from 'three';
+import { DirectionalLightHelper, Fog, PointLightHelper } from 'three';
 import { WEBGL } from './webgl';
 
 if (WEBGL.isWebGLAvailable()) {
+  //컬러
+
+  const fogColor = 0x004fff;
+  const objColor = 0xffffff;
+  const floorColor = 0x555555;
+
   // 장면
   const scene = new THREE.Scene();
-  // scene.background = new THREE.Color(0x004fff);
+  scene.background = new THREE.Color(floorColor);
+  scene.fog = new Fog(fogColor, 2, 8);
 
   // 카메라
   const camera = new THREE.PerspectiveCamera(
@@ -14,7 +21,7 @@ if (WEBGL.isWebGLAvailable()) {
     0.1,
     1000
   );
-  camera.position.set(5, 5, 5);
+  camera.position.set(0, 2, 5);
   camera.lookAt(0, 0, 0);
 
   // 렌더러
@@ -28,16 +35,19 @@ if (WEBGL.isWebGLAvailable()) {
     antialias: true,
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
-
+  renderer.shadowMap.enabled = true;
   document.body.appendChild(renderer.domElement);
 
   // 빛
-  const pointLight = new THREE.DirectionalLight(0xffffff, 1);
-  pointLight.position.set(10, 10, 10);
-  scene.add(pointLight);
+  const light = new THREE.PointLight(0xffffff, 1);
+  light.position.set(5, 5, 1);
+  scene.add(light);
+  light.castShadow = true;
+  // light.shadow.mapSize.width = 2048;  //클수록 그림자 선명해지나 메모리 많이씀
+  // light.shadow.mapSize.height = 2048;
 
   // 빛 어디서 쏘는지 시각화
-  const lightHelper = new DirectionalLightHelper(pointLight, 0.2, 0x99999);
+  const lightHelper = new PointLightHelper(light, 1, 0x99999);
   scene.add(lightHelper);
 
   // 텍스쳐 추가
@@ -60,13 +70,14 @@ if (WEBGL.isWebGLAvailable()) {
   });
   const obj01 = new THREE.Mesh(geometry01, material01);
   obj01.position.x = 0;
-  obj01.position.y = 3;
+  obj01.position.y = 0;
+  obj01.castShadow = true;
   scene.add(obj01);
 
   // 매쉬
   const geometry02 = new THREE.ConeGeometry(0.5, 0.5, 0.5);
   const material02 = new THREE.MeshStandardMaterial({
-    color: 0xff7f00,
+    color: 0xf8a9f7,
   });
   const obj02 = new THREE.Mesh(geometry02, material02);
   obj02.position.x = 1;
@@ -76,7 +87,7 @@ if (WEBGL.isWebGLAvailable()) {
   // 매쉬
   const geometry03 = new THREE.IcosahedronGeometry(0.4, 0);
   const material03 = new THREE.MeshStandardMaterial({
-    color: 0x999999,
+    color: objColor,
   });
   const obj03 = new THREE.Mesh(geometry03, material03);
   obj03.position.x = 3;
@@ -100,12 +111,14 @@ if (WEBGL.isWebGLAvailable()) {
   // 바닥 추가
   const planeGeometry = new THREE.PlaneGeometry(20, 20, 1, 1);
   const planeMaterial = new THREE.MeshStandardMaterial({
-    map: texture01,
+    // map: texture01,
+    color: floorColor,
   });
 
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.rotation.x = -0.5 * Math.PI;
   plane.position.y = -0.2;
+  plane.receiveShadow = true;
   scene.add(plane);
 
   function render(time) {
