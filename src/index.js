@@ -1,19 +1,21 @@
 import * as THREE from 'three';
+import { DirectionalLightHelper, PointLightHelper } from 'three';
 import { WEBGL } from './webgl';
 
 if (WEBGL.isWebGLAvailable()) {
   // 장면
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x004fff);
+  // scene.background = new THREE.Color(0x004fff);
 
   // 카메라
   const camera = new THREE.PerspectiveCamera(
-    75,
+    100,
     window.innerWidth / window.innerHeight,
     0.1,
     1000
   );
-  camera.position.z = 3;
+  camera.position.set(5, 5, 5);
+  camera.lookAt(0, 0, 0);
 
   // 렌더러
   // 1. html 에 canvas 태그 만들어놓고 서냍ㄱ 후 렌더러 객체 파라미터로 전달
@@ -30,9 +32,13 @@ if (WEBGL.isWebGLAvailable()) {
   document.body.appendChild(renderer.domElement);
 
   // 빛
-  const pointLight = new THREE.PointLight(0xffffff, 1);
-  pointLight.position.set(0, 2, 12);
+  const pointLight = new THREE.DirectionalLight(0xffffff, 1);
+  pointLight.position.set(10, 10, 10);
   scene.add(pointLight);
+
+  // 빛 어디서 쏘는지 시각화
+  const lightHelper = new DirectionalLightHelper(pointLight, 0.2, 0x99999);
+  scene.add(lightHelper);
 
   // 텍스쳐 추가
   const textureLoader = new THREE.TextureLoader();
@@ -53,7 +59,8 @@ if (WEBGL.isWebGLAvailable()) {
     roughnessMap: texture04,
   });
   const obj01 = new THREE.Mesh(geometry01, material01);
-  obj01.position.x = -1;
+  obj01.position.x = 0;
+  obj01.position.y = 3;
   scene.add(obj01);
 
   // 매쉬
@@ -62,6 +69,8 @@ if (WEBGL.isWebGLAvailable()) {
     color: 0xff7f00,
   });
   const obj02 = new THREE.Mesh(geometry02, material02);
+  obj02.position.x = 1;
+  obj02.position.y = 3;
   scene.add(obj02);
 
   // 매쉬
@@ -70,7 +79,8 @@ if (WEBGL.isWebGLAvailable()) {
     color: 0x999999,
   });
   const obj03 = new THREE.Mesh(geometry03, material03);
-  obj03.position.x = 1;
+  obj03.position.x = 3;
+  obj03.position.y = 3;
   scene.add(obj03);
 
   // 매쉬
@@ -83,8 +93,20 @@ if (WEBGL.isWebGLAvailable()) {
     opacity: 0.5,
   });
   const obj04 = new THREE.Mesh(geometry04, material04);
-  obj04.position.x = 2;
+  obj04.position.x = 4;
+  obj04.position.y = 3;
   scene.add(obj04);
+
+  // 바닥 추가
+  const planeGeometry = new THREE.PlaneGeometry(20, 20, 1, 1);
+  const planeMaterial = new THREE.MeshStandardMaterial({
+    map: texture01,
+  });
+
+  const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+  plane.rotation.x = -0.5 * Math.PI;
+  plane.position.y = -0.2;
+  scene.add(plane);
 
   function render(time) {
     time *= 0.001;
