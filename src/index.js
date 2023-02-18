@@ -34,11 +34,23 @@ if (WEBGL.isWebGLAvailable()) {
   pointLight.position.set(0, 2, 12);
   scene.add(pointLight);
 
+  // 텍스쳐 추가
+  const textureLoader = new THREE.TextureLoader();
+  const texture01 = textureLoader.load('../static/images/texture01.jpg');
+  const texture02 = textureLoader.load('../static/images/texture02.jpg');
+  const texture03 = textureLoader.load('../static/images/texture03.jpg');
+  const texture04 = textureLoader.load('../static/images/texture04.jpg');
+  const texture05 = textureLoader.load('../static/images/texture05.jpg');
+
   // 도형 추가하기
   // 매쉬
-  const geometry01 = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  const geometry01 = new THREE.SphereGeometry(0.5, 0.5, 0.5);
   const material01 = new THREE.MeshStandardMaterial({
-    color: 0x999999,
+    map: texture01,
+    normalMap: texture02,
+    displacementMap: texture03,
+    displacementScale: 0.1,
+    roughnessMap: texture04,
   });
   const obj01 = new THREE.Mesh(geometry01, material01);
   obj01.position.x = -1;
